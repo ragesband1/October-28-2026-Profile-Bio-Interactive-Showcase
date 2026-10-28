@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Bio & Interactive Showcase</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neonPink: '#ff007f',
+                        neonPurple: '#9d00ff',
+                        neonCyan: '#00f3ff',
+                        darkBg: '#0a0a12',
+                    },
+                    animation: {
+                        'neon-pulse': 'neonGlow 1.8s infinite alternate ease-in-out',
+                        'shockwave': 'shockwave 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        neonGlow: {
+                            '0%': { boxShadow: '0 0 5px #ff007f, 0 0 10px #ff007f, inset 0 0 5px #ff007f' },
+                            '50%': { boxShadow: '0 0 20px #9d00ff, 0 0 35px #9d00ff, inset 0 0 10px #9d00ff' },
+                            '100%': { boxShadow: '0 0 10px #00f3ff, 0 0 25px #00f3ff, inset 0 0 15px #00f3ff' },
+                        },
+                        shockwave: {
+                            '0%': { transform: 'scale(0)', opacity: '1' },
+                            '100%': { transform: 'scale(25)', opacity: '0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #06060c;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        .heading-font {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* 2-second smooth color saturation transition */
+        .saturate-effect {
+            transition: filter 2s ease-in-out, transform 0.3s ease;
+            filter: saturate(0.4) contrast(1.1);
+        }
+
+        .saturate-effect:hover, .saturate-effect.active {
+            filter: saturate(2.2) contrast(1.2) brightness(1.1);
+        }
+
+        /* Glitch / Blinking neon border animation for horror-esque aesthetic */
+        .horror-neon-card {
+            border: 2px solid #ff007f;
+            animation: glitchBorder 2.5s infinite steps(1, end), neonPulse 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glitchBorder {
+            0%, 100% { border-color: #ff007f; box-shadow: 0 0 15px #ff007f, inset 0 0 10px #ff007f; }
+            20% { border-color: #00f3ff; box-shadow: 0 0 25px #00f3ff, inset 0 0 15px #00f3ff; }
+            22% { border-color: #ff0000; box-shadow: 0 0 5px #ff0000, inset 0 0 2px #ff0000; opacity: 0.7; }
+            24% { opacity: 1; }
+            60% { border-color: #9d00ff; box-shadow: 0 0 20px #9d00ff, inset 0 0 12px #9d00ff; }
+            80% { border-color: #ff007f; opacity: 0.4; }
+            82% { opacity: 1; }
+        }
+
+        /* Rainbow Shockwave Element */
+        .shockwave-ripple {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            width: 30px;
+            height: 30px;
+            margin-left: -15px;
+            margin-top: -15px;
+            background: radial-gradient(circle, rgba(255,0,0,0.8) 0%, rgba(255,154,0,0.8) 18%, rgba(208,255,0,0.8) 35%, rgba(0,255,108,0.8) 52%, rgba(0,178,255,0.8) 70%, rgba(178,0,255,0.8) 87%, rgba(255,0,128,0.8) 100%);
+            animation: shockwaveAnim 0.9s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            z-index: 50;
+        }
+
+        @keyframes shockwaveAnim {
+            0% { transform: scale(0); opacity: 1; border-width: 2px; }
+            50% { opacity: 0.8; }
+            100% { transform: scale(35); opacity: 0; }
+        }
+
+        /* Floating dynamic love messages */
+        .floating-msg {
+            position: fixed;
+            pointer-events: none;
+            font-weight: 800;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px rgba(255, 0, 127, 0.8), 0 0 20px rgba(0, 243, 255, 0.8);
+            animation: floatUpAndFade 2.5s ease-out forwards;
+            z-index: 100;
+        }
+
+        @keyframes floatUpAndFade {
+            0% { transform: translateY(0) scale(0.6); opacity: 0; }
+            20% { opacity: 1; transform: translateY(-20px) scale(1.1); }
+            80% { opacity: 1; }
+            100% { transform: translateY(-120px) scale(0.9); opacity: 0; }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a12;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff007f;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-x-hidden">
+
+    <!-- Background Decorative Glows -->
+    <div class="fixed top-1/4 left-1/4 w-72 h-72 md:w-96 md:h-96 bg-neonPink/20 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="fixed bottom-1/4 right-1/4 w-72 h-72 md:w-96 md:h-96 bg-neonCyan/20 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-2xl mx-auto z-10">
+        
+        <!-- Profile Header Card -->
+        <div class="bg-darkBg/90 backdrop-blur-md rounded-2xl p-6 md:p-8 horror-neon-card saturate-effect relative overflow-hidden shadow-2xl transition-all duration-500">
+            
+            <!-- User Info Header -->
+            <div class="flex flex-col md:flex-row items-center gap-6 mb-6">
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-neonPink via-neonPurple to-neonCyan rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+                    <img src="https://placehold.co/120x120/111827/ff007f?text=PRO-FILE" alt="Profile Portrait" class="relative w-28 h-28 rounded-full object-cover border-2 border-neonCyan shadow-lg">
+                </div>
+                <div class="text-center md:text-left">
+                    <h1 class="heading-font text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neonPink via-purple-300 to-neonCyan">
+                        POLYAMOROUS VIBES
+                    </h1>
+                    <p class="text-slate-400 text-sm mt-1 tracking-wide">Status: Active & Searching | Permanent Connections Only</p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-2 mt-3">
+                        <span class="px-3 py-1 bg-neonPink/10 border border-neonPink/40 rounded-full text-xs text-neonPink font-medium">Honest Love</span>
+                        <span class="px-3 py-1 bg-neonPurple/10 border border-neonPurple/40 rounded-full text-xs text-neonPurple font-medium">Zero Drama</span>
+                        <span class="px-3 py-1 bg-neonCyan/10 border border-neonCyan/40 rounded-full text-xs text-neonCyan font-medium">100% Single Matches</span>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-slate-800 my-4">
+
+            <!-- Interactive Bio Statement Card -->
+            <div id="interactiveBio" class="relative group cursor-pointer bg-slate-900/80 border border-slate-700/60 hover:border-neonPink p-6 rounded-xl transition-all duration-300 hover:shadow-[0_0_25px_rgba(255,0,127,0.3)] overflow-hidden">
+                <div class="absolute top-2 right-3 text-[10px] uppercase font-bold tracking-widest text-neonCyan/70 flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-neonPink animate-ping"></span> Click Statement
+                </div>
+
+                <p class="text-lg md:text-xl font-medium leading-relaxed text-slate-100 select-none">
+                    "<span class="text-neonPink font-semibold">Exploring polyamory.</span> Looking for <span class="underline decoration-neonCyan decoration-2 underline-offset-4">100% single, honest, and drama-free</span> matches. Permanent love and mutual respect for everyone—strictly zero hidden partners, zero ex-drama, and zero third parties from day one."
+                </p>
+
+                <p class="text-xs text-slate-400 mt-4 italic text-right group-hover:text-neonPink transition-colors">
+                    ✨ Click to view permanent lovers & express dynamic declarations ✨
+                </p>
+            </div>
+
+            <!-- Footer Stats / Details -->
+            <div class="mt-6 grid grid-cols-3 gap-2 text-center text-xs text-slate-400 border-t border-slate-800/80 pt-4">
+                <div>
+                    <span class="block text-lg font-bold text-slate-200 heading-font">3+</span>
+                    <span>Loved Partners</span>
+                </div>
+                <div>
+                    <span class="block text-lg font-bold text-neonCyan heading-font">100%</span>
+                    <span>Transparency</span>
+                </div>
+                <div>
+                    <span class="block text-lg font-bold text-neonPink heading-font">Infinite</span>
+                    <span>Affection</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Dialog Box / Modal for Partners & Interactive Love Declarations -->
+    <div id="partnersModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-darkBg border-2 border-neonCyan/80 rounded-2xl max-w-xl w-full p-6 relative shadow-[0_0_50px_rgba(0,243,255,0.3)] transform scale-95 transition-transform duration-300 max-h-[90vh] flex flex-col">
+            
+            <!-- Close Button -->
+            <button id="closeModal" class="absolute top-4 right-4 text-slate-400 hover:text-neonPink text-2xl font-bold transition-colors w-8 h-8 rounded-full bg-slate-900/80 flex items-center justify-center border border-slate-700">
+                &times;
+            </button>
+
+            <div class="text-center mb-6">
+                <h2 class="heading-font text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neonPink via-neonPurple to-neonCyan">
+                    PERMANENT LOVERS
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">Bound by mutual respect, honest romance, and affection</p>
+            </div>
+
+            <!-- Scrollable List of Partners -->
+            <div class="space-y-4 overflow-y-auto pr-2 my-auto flex-1">
+                
+                <!-- Partner Card 1: Million -->
+                <div class="partner-card bg-slate-900/90 border border-neonPink/40 rounded-xl p-4 flex items-center gap-4 hover:border-neonPink transition-all duration-300 saturate-effect hover:scale-[1.02]">
+                    <img src="https://placehold.co/80x80/2a081a/ff007f?text=MILLION" alt="Million" class="w-16 h-16 rounded-lg object-cover border border-neonPink shadow-md">
+                    <div class="flex-1">
+                        <h3 class="heading-font text-lg font-bold text-neonPink">Million</h3>
+                        <p class="text-xs text-slate-300 italic">"Permanent lover from dating app encounters. Unconditional devotion."</p>
+                        <span class="inline-block mt-2 text-[10px] bg-neonPink/20 text-neonPink px-2 py-0.5 rounded font-semibold">Love Level: Infinite</span>
+                    </div>
+                </div>
+
+                <!-- Partner Card 2: Billion -->
+                <div class="partner-card bg-slate-900/90 border border-neonPurple/40 rounded-xl p-4 flex items-center gap-4 hover:border-neonPurple transition-all duration-300 saturate-effect hover:scale-[1.02]">
+                    <img src="https://placehold.co/80x80/1a092a/9d00ff?text=BILLION" alt="Billion" class="w-16 h-16 rounded-lg object-cover border border-neonPurple shadow-md">
+                    <div class="flex-1">
+                        <h3 class="heading-font text-lg font-bold text-neonPurple">Billion</h3>
+                        <p class="text-xs text-slate-300 italic">"Pure mutual affection & total transparency. Zero drama."</p>
+                        <span class="inline-block mt-2 text-[10px] bg-neonPurple/20 text-neonPurple px-2 py-0.5 rounded font-semibold">Status: Forever Bonded</span>
+                    </div>
+                </div>
+
+                <!-- Partner Card 3: Trillion -->
+                <div class="partner-card bg-slate-900/90 border border-neonCyan/40 rounded-xl p-4 flex items-center gap-4 hover:border-neonCyan transition-all duration-300 saturate-effect hover:scale-[1.02]">
+                    <img src="https://placehold.co/80x80/08212a/00f3ff?text=TRILLION" alt="Trillion" class="w-16 h-16 rounded-lg object-cover border border-neonCyan shadow-md">
+                    <div class="flex-1">
+                        <h3 class="heading-font text-lg font-bold text-neonCyan">Trillion</h3>
+                        <p class="text-xs text-slate-300 italic">"Enchanted romance, profound intimacy, and endless care."</p>
+                        <span class="inline-block mt-2 text-[10px] bg-neonCyan/20 text-neonCyan px-2 py-0.5 rounded font-semibold">Connection: Eternal</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Action Button inside Modal -->
+            <div class="mt-6 text-center pt-4 border-t border-slate-800">
+                <button id="triggerMessagesBtn" class="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-neonPink via-neonPurple to-neonCyan text-white font-bold tracking-wide shadow-lg hover:brightness-125 transition-all transform hover:scale-[1.01] active:scale-95 heading-font text-sm">
+                    💖 SPREAD LOVE DECLARATIONS 💖
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const bioCard = document.getElementById('interactiveBio');
+            const modal = document.getElementById('partnersModal');
+            const closeModalBtn = document.getElementById('closeModal');
+            const triggerMessagesBtn = document.getElementById('triggerMessagesBtn');
+
+            // Floating text messages list
+            const loveDeclarations = [
+                "💖 I LOVE MILLION 💖",
+                "💜 I LOVE BILLION 💜",
+                "💙 I LOVE TRILLION 💙",
+                "✨ PERMANENT LOVE FOR EVERYONE ✨",
+                "🔥 PASSIONATE MUTUAL INTIMACY & ROMANCE 🔥",
+                "💎 ZERO DRAMA - 100% HONESTY 💎",
+                "💋 INFINITE AFFECTION & EXPRESSION 💋"
+            ];
+
+            // Trigger Shockwave Animation
+            function createShockwave(e) {
+                const rect = bioCard.getBoundingClientRect();
+                const shockwave = document.createElement('div');
+                shockwave.className = 'shockwave-ripple';
+                
+                // Position relative to viewport or click target
+                const x = e.clientX || (rect.left + rect.width / 2);
+                const y = e.clientY || (rect.top + rect.height / 2);
+
+                shockwave.style.left = `${x}px`;
+                shockwave.style.top = `${y}px`;
+
+                document.body.appendChild(shockwave);
+
+                setTimeout(() => {
+                    shockwave.remove();
+                }, 900);
+            }
+
+            // Trigger Floating Text Popups
+            function spawnFloatingMessages(x, y) {
+                loveDeclarations.forEach((msg, index) => {
+                    setTimeout(() => {
+                        const floatingElem = document.createElement('div');
+                        floatingElem.className = 'floating-msg text-sm md:text-base';
+                        floatingElem.innerText = msg;
+
+                        // Randomize position near click area
+                        const offsetX = (Math.random() - 0.5) * 220;
+                        const offsetY = (Math.random() - 0.5) * 100;
+
+                        const startX = Math.max(40, Math.min(window.innerWidth - 200, (x || window.innerWidth / 2) + offsetX));
+                        const startY = Math.max(100, (y || window.innerHeight / 2) + offsetY);
+
+                        floatingElem.style.left = `${startX}px`;
+                        floatingElem.style.top = `${startY}px`;
+
+                        // Alternating text color glow
+                        const colors = ['#ff007f', '#9d00ff', '#00f3ff', '#ff0055'];
+                        floatingElem.style.color = colors[index % colors.length];
+
+                        document.body.appendChild(floatingElem);
+
+                        setTimeout(() => {
+                            floatingElem.remove();
+                        }, 2500);
+                    }, index * 280); // Staggered delays
+                });
+            }
+
+            // Open Modal Function
+            function openModal() {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                modal.classList.add('opacity-100');
+                const modalBox = modal.querySelector('div');
+                modalBox.classList.remove('scale-95');
+                modalBox.classList.add('scale-100');
+            }
+
+            // Close Modal Function
+            function closeModal() {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                modal.classList.remove('opacity-100');
+                const modalBox = modal.querySelector('div');
+                modalBox.classList.add('scale-95');
+                modalBox.classList.remove('scale-100');
+            }
+
+            // Event Listeners
+            bioCard.addEventListener('click', (e) => {
+                createShockwave(e);
+                spawnFloatingMessages(e.clientX, e.clientY);
+                
+                // Open dialog box after slight delay for visual impact
+                setTimeout(() => {
+                    openModal();
+                }, 600);
+            });
+
+            closeModalBtn.addEventListener('click', closeModal);
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            triggerMessagesBtn.addEventListener('click', (e) => {
+                spawnFloatingMessages(e.clientX, e.clientY);
+            });
+        });
+    </script>
+</body>
+</html>
